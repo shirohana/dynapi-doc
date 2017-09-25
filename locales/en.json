@@ -1,0 +1,22 @@
+{
+  "lang": "en",
+  "flagIcon": "us",
+  "languageName": "English",
+  "language": "Language",
+  "homepage": "Homepage",
+  "highlightStyle": "github",
+  "resource": "Resource",
+  "links": {
+    "news": "News",
+    "guide": "Guide",
+    "api": "API",
+    "changelog": "Changelog"
+  },
+  "guide": {
+    "Getting Started": {
+      "": "Introduction",
+      "installation": "Installation",
+      "routing-rules": "Routing Rules"
+    }
+  }
+}
