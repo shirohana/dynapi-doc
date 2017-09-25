@@ -1,0 +1,70 @@
+extends /layouts/document
+
+append attrs
+  - contentAttr = { class: 'has-text-justified' }
+
+block content
+  :markdown
+    ### 安裝
+    ---
+
+    #### Via NPM
+
+    ```
+    $ npm install dynapi
+    ```
+
+    #### Via Yarn
+
+    ```
+    $ yarn add dynapi
+    ```
+
+    ### 初始化
+    ---
+
+    Dynapi 提供兩種自動初始化方法：`factory` 以及 `singleton`；兩種方法在使用上大同小異，差別在於
+    `singleton` 是包裝過的 `factory`，能確保重複呼叫時維持單一實例。
+
+    注意，傳入 Dynapi 的請求將不會再交給下一個中介軟體；如果把 Dynapi
+    掛載在 `/`，請務必把 Dynapi 掛載在必要的[^middlewares]中介軟體之後。
+
+    [^middlewares]: 像是 morgan、helmet、body-parser 之類的
+
+    在某些特殊情況[^sing]下，你會需要使用 `singleton` 建立實例，其餘情形使用 `factory` 跟
+    `singleton` 並無差異。
+
+    [^sing]: 例如與「提供自動重啟[^hot-reloading]功能的框架」整合時
+    [^hot-reloading]: Hot-reloading。當配置檔案更新時，即時重新啟動整個應用
+
+    ```javascript
+    // Enable debug messages
+    process.env.DEBUG = (process.env.DEBUG ? process.env.DEBUG + ',api:*' : 'api:*')
+
+    const dnp = require('dynapi')
+
+    app.use('/api', dnp()) // Using factory function
+    app.use('/api', dnp.singleton()) // Using singleton function
+    ```
+
+    #### Singleton 使用案例（與 [Nuxt.js][nuxt] 搭配）
+
+    ```javascript
+    // nuxt.config.js
+    const dnp = require('dynapi')
+
+    module.exports = {
+      serverMiddleware: [
+        { path: '/api', handler: dnp.singleton() }
+      ]
+    }
+    ```
+
+    ### 使用 API
+    ---
+
+    除了 `factory` 和 `singleton` 兩種自動初始化方法，你也能直接透過 API 初始化
+    Dynapi；目前請暫時參考 [Dynapi#factory][dnp_factory]。
+
+    [nuxt]: https://nuxtjs.org/
+    [dnp_factory]: https://github.com/shirohana/dynapi/blob/dev/lib/factory.js

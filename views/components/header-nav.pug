@@ -1,0 +1,44 @@
+- prefix = (typeof lang === 'string' && lang.length > 0 ? `/${lang}` : '/')
+- suffix = (`/${currentPage || ''}/${currentChapter || ''}`).replace(/\/+/g, '/')
+
+nav.navbar.has-shadow.is-transparent: .container
+
+  .navbar-brand
+    a.navbar-item.is-size-4( href="/" )
+      | Dynapi
+
+    #nav_toggle.navbar-burger
+      span
+      span
+      span
+
+  #nav_menu.navbar-menu
+    .navbar-end
+      each label, link in links
+        if typeof __(link) === 'object'
+          .navbar-item.has-dropdown.is-hoverable
+            a.navbar-link( href=`${prefix}/${link}`, class=`${link === currentPage ? 'is-active' : ''}` )
+              = label
+            .navbar-dropdown
+              each chapters, what in __(link)
+                if appeared
+                  hr.dropdown-divider
+                - appeared = true
+                each chapterName, chapterLink in chapters
+                  a.navbar-item( href=`${prefix}/${link}/${chapterLink}` )
+                    = chapterName
+        else
+          a.navbar-item( href=`${prefix}/${link}`, class=`${link === currentPage ? 'is-active' : ''}` )
+            = label
+
+      //- Languages
+      .navbar-item.has-dropdown.is-hoverable
+        a.navbar-link
+          i.flag-icon.is-hidden-touch( class=`flag-icon-${flagIcon}` )
+          span.is-hidden-desktop
+            = language
+        .navbar-dropdown.is-right
+          each _lang in availableLanguages
+            a.navbar-item( href=`/${_lang.link}${suffix}` )
+              i.flag-icon( class=`flag-icon-${_lang.icon}` )
+              span.margin-left.is-1= _lang.name

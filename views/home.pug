@@ -1,0 +1,9 @@
+extends /layouts/content
+
+block content
+  if lang === 'zh-TW'
+    :markdown
+      > 首頁，還沒有決定該擺些什麼，建議先去 [操作指南](/${lang}/guide) 隨意看看。
+  else
+    :markdown
+      > Homepage, it's not decided what to put on here now. You can look around [Guide](/${lang}/guide) page.

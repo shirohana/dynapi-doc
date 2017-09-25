@@ -1,0 +1,26 @@
+doctype html
+html( lang=lang )
+  head
+    block head
+      meta( charset="utf-8" )
+      meta( name="viewport", content="width=device-width, initial-scale=1, maximum-scale=1" )
+      title #{title} - Dynapi
+      block styles
+        link( rel="stylesheet", href="/resource/style/bulma.css" )
+        link( rel="stylesheet", href="/resource/style/main.css" )
+        link( rel="stylesheet", href="/resource/style/flag-icon.css" )
+        link( rel="stylesheet", href="/resource/style/highlight.css" )
+        link( rel="stylesheet", href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" )
+
+  body.app
+    block body
+      header.app-header
+        block header
+          include ../components/header
+      main.app-main
+        block main
+      footer.app-footer
+        block footer
+          include ../components/footer
+      block scripts
+        script( defer, src="/resource/script/main.js" )

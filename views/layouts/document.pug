@@ -1,0 +1,18 @@
+extends default
+
+include /mixins/document
+
+block main
+  block attrs
+    - contentAttr = {}
+    - menuSize = 3
+
+  .container: section.section
+    .columns
+
+      .column( class=`is-${menuSize}` )
+        include /components/menu
+
+      .column( class=`is-${12 - menuSize}` )
+        .content&attributes(contentAttr)
+          block content

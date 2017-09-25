@@ -1,0 +1,36 @@
+.app
+  display: flex
+  min-height: 100vh
+  flex-direction: column
+
+.app-main
+  flex: 1
+
+.margin-left.is-1
+  margin-left: .25rem
+
+.content
+
+  table .tags
+    flex-wrap: nowrap
+
+  .tags.has-addons
+    display: inline-flex
+    vertical-align: top
+    ^[0] h1 ^[1..-1]
+    ^[0] h2 ^[1..-1]
+      vertical-align: middle
+      position: relative
+      margin-bottom: 0.25em
+    margin-bottom: 0
+    .tag
+      margin-bottom: 0
+
+.footnotes
+  font-size: .875em
+
+.break-word
+  word-break: break-word
+
+.break-word-all
+  word-break: break-all

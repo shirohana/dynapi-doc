@@ -1,0 +1,82 @@
+extends /layouts/document
+
+include /mixins/bulma-tag
+
+append attrs
+  - contentAttr = { class: 'has-text-justified' }
+
+block content
+  :markdown
+    # Middleware {Middleware}
+
+    > {Middleware} 主要的用途在於過濾請求、紀錄事件、驗證身份等。
+    >
+    > 透過呼叫傳入的方法 `next` 判斷請求鍊是否繼續執行下去，或是終止請求。
+    >
+    > 記得`總是呼叫 next`
+
+    ## 檔名格式
+    ---
+
+    目前[^symbol_naming] {Middleware} 的檔案名稱皆統一為 `middleware.js`。
+
+    [^symbol_naming]: 正在考慮是否使用 [Symbol Naming](/${lang}/news#symbol_naming)
+
+    ### 範例
+
+    ```
+    </project/
+    ▾ api/
+      ▾ users/
+        | middleware.js  <- 判斷當 `post`（註冊）時，檢驗 ReCaptcha
+        | get.js   <- GET  不需要檢查 ReCaptcha
+        | post.js  <- POST 執行到這邊時，ReCaptcha 已經確認沒有問題了
+        middleware.js  <- 全域中介軟體，所有請求都會經過他。
+                          在這邊載入、初始化、驗證一些每個請求都需要的東西（API key 之類的）
+      ...
+    ```
+
+    ## 檔案內容
+    ---
+
+    ### 範例
+
+    ```javascript
+    // (req: Request, res: Response, next: Function)
+    export default (req, res, next) => {
+      if (!req.user.hasPermission('user.modify')) {
+        next(new UserNoPermissionError()) // 拋出可被 Catcher 捕獲的自訂錯誤
+        return // 呼叫 next() 並不會跳出方法，你也可以寫成 return next(...)
+      }
+
+      ...
+      next() // 通知 Dynapi 執行下一個 Handler
+
+      // 呼叫 next() 後，Dynapi 會把執行權交給下一個 Handler。
+      // 如果後續的動作無關乎這次的響應（呼叫第三方 API 之類的），
+      // 可以及早呼叫 next() 來降低響應時間。
+    }
+    ```
+
+    ### 選項
+
+    - `ignore` 是否忽略這個檔案。設為 `true` 時，行為跟這檔案不存在一樣。
+
+      ```javascript
+      export const ignore = false // 預設值
+      ```
+
+    - `timeout` 指定必須在多少時間內做出響應（呼叫 `next()`）。
+
+      如果沒有在時間內呼叫 `next()`，Dynapi 會終止等待並拋出 408(Response Timeout)
+      Error， 開發人員應確保給予 Middleware 足夠的響應時間。
+
+      ```javascript
+      /**
+       * if timeout === 0,
+       *   拒絕所有請求並拋出 408。
+       * else if timeout < 0,
+       *   持續等待直到 `next` 被調用。
+       */
+      export const timeout = 800 // 預設值（毫秒）
+      ```

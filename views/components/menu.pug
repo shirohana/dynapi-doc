@@ -1,0 +1,14 @@
+- prefix = (typeof lang === 'string' && lang.length > 0 ? `/${lang}` : '/')
+- currentChapter = currentChapter || ''
+
+include /mixins/bulma-menu
+
++menu
+  each chapters, label in __(currentPage)
+    +menu-label(label)
+    +menu-list
+      each chapter, link in chapters
+        if link === currentChapter
+          +menu-item(chapter)( class="is-active" )
+        else
+          +menu-item(chapter)( href=`${prefix}/${currentPage}/${link}` )

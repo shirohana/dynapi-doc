@@ -1,0 +1,30 @@
+{
+  "lang": "zh-TW",
+  "flagIcon": "tw",
+  "languageName": "正體中文",
+  "language": "語言",
+  "homepage": "首頁",
+  "highlightStyle": "github",
+  "resource": "資源",
+  "links": {
+    "news": "最新快訊",
+    "guide": "操作指南",
+    "api": "API",
+    "changelog": "更新日誌"
+  },
+  "guide": {
+    "Getting Started": {
+      "": "簡介",
+      "installation": "安裝",
+      "definitions": "名詞定義",
+      "configuration": "配置",
+      "routing-rules": "路由規則"
+    },
+    "Topic": {
+      "responser": "Responser",
+      "middleware": "Middleware",
+      "parameter": "Parameter",
+      "catcher": "Catcher"
+    }
+  }
+}

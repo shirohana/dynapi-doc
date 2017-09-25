@@ -1,0 +1,17 @@
+mixin menu
+  aside.menu&attributes(attributes)
+    block
+
+mixin menu-label(title)
+  p.menu-label&attributes(attributes)
+    = title
+
+mixin menu-list
+  ul.menu-list&attributes(attributes)
+    block
+
+mixin menu-item(title)
+  li
+    a&attributes(attributes)
+      = title
+    block

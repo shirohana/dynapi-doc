@@ -1,0 +1,39 @@
+//- Examples
+  +tag
+
+  +tag-pill
+    +tag
+    +tag
+
+  +tags
+    +tag
+    +tag
+
+  +tags-pill
+    +tags-pill-item
+      +tag
+      +tag
+    +tags-pill-item
+      +tag
+      +tag
+
+mixin tags
+  .tags&attributes(attributes)
+    block
+
+mixin tag
+  span.tag&attributes(attributes)
+    block
+
+mixin tag-pill
+  .tags.has-addons&attributes(attributes)
+    block
+
+mixin tags-pill
+  .field.is-grouped.is-grouped-multiline&attributes(attributes)
+    block
+
+mixin tags-pill-item
+  .control
+    +tag-pill&attributes(attributes)
+      block

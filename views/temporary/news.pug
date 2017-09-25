@@ -1,0 +1,115 @@
+:markdown
+
+  > Here's the newest information which means it's not published to NPM yet.
+
+  ### Known bug
+  ---
+
+  - `export-from` syntax doesn't purge compiled dependents correctly.
+
+    ```javascript
+    // Dependents doesn't purged correctly
+    export * from './parsers'
+
+    // You can use `import` explicitly until we fixed this issue
+    import * as parsers from './parsers'
+    export default Object.assign({}, parsers)
+    ```
+
+  - Method `m-search` renamed to `msearch` temporary.
+
+  ### TODO
+  ---
+
+  - Add
+    - {Middleware} `export default` array support?
+    - [Custom error handling](#custom-error-handler)
+    - `index.js` alias to `get.js`
+    - Custom babel transform plugins
+    - `all` method support
+    - Use ([A-Za-z0-9\_]) only in paramRoutes to separate them like [Express: Route parameters](http://expressjs.com/en/guide/routing.html#route-parameters)
+
+  - Change
+    - Use {Route} dirname directly instead kebab-case.
+    - <a id="symbol_naming"></a>Use special symbols as filename for {Middleware}, {Parameter}, and {Catcher}? (should Customizable?)
+
+      Like `> as middleware`, you can easily attach multiple middlewares like `>.js`, `>user-verify.js` `>recaptcha.js`, etc.
+
+      e.g., `>is-signed.js`, `#404.js`, `&userId.js` (or `&.js` but `&userId.js` has more readability).
+
+      ```javascript
+      > order = '0aA~!@#$%^&*-=+|>?'.split('').sort()_
+      [ '!', '#', '$', '%', '&',
+        '*', '+', '-', '0', '=',
+        '>', '?', '@', 'A', '^',
+        'a', '|', '~' ]
+      ```
+
+      - <a id="complex_param_support"></a>Multiple {Parameter} support in same {ParamRoute}
+
+        Like `/flights/:from-:to`, you can use two param file to handle different params like
+        `&from.js` and `&to.js`
+
+  - Internal
+    - `Object.freeze` options
+    - Watch `aliases` dirs to improve performance
+    - Use `babel-preset-env`
+    - Move missing default export warning from execution to build time
+
+  ### Fixed
+  ---
+
+  - Babel transform-runtime issue from syntax `export-from`. ([issue](https://github.com/babel/babel/issues/2877))
+
+  ### <a id="custom-error-handler"></a>(preparing) Custom Error Handler
+  ---
+
+  You can catch any error thrown by `next()` in `middleware` or `param`, even `throw` in `responser`.
+
+  You can also specify which Error or StatusCode to catch in multiple error handlers.
+
+  Here's the basic spec:
+
+  ```javascript
+  // ~error/permission-denied.js
+  export default class PermissionDeny extends UserError {
+    constructor (message) {
+      super(message)
+      this.code = 'USER_PERMISSION_DENY'
+      this.status = 403
+    }
+  }
+  ```
+
+  ```javascript
+  // /api/user/profile/middleware.js
+  import PermissionDenyError from '~error/permission-deny'
+  export default (req, res, next) => {
+    if (/* User not login */) {
+      return next(new PermissionDenyError())
+    }
+    /* ... */
+  }
+  ```
+
+  ```javascript
+  // /api/user/error-403.js
+  import PermissionDenyError from '~error/permission-deny'
+
+  // By status code
+  export const status = 403 // Or an array [400, 401, 403]
+  // By error instance
+  export const type = PermissionDenyError // Or an array of ErrorTypes
+
+  export default (err, req, res, next) => {
+    // If you pass the type property an array
+    if (err instanceof PermissionDenyError) {
+      // You can end this request in error handler directly
+      return res.json({ success: false, message: err.message, code: err.code })
+    } else {
+      // Or you can attach more information and pass through to parent error handler
+      // If no error handler above, Dynapi will handle this error
+      return next(err)
+    }
+  }
+  ```

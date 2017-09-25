@@ -1,0 +1,11 @@
+extends default
+
+include /mixins/document
+
+block main
+  block attrs
+    - contentAttr = {}
+
+  .container: section.section
+    .content&attributes(contentAttr)
+      block content

@@ -1,0 +1,74 @@
+extends /layouts/document
+
+append styles
+  style.
+    .content p {
+      word-break: break-all;
+    }
+
+append attrs
+  - contentAttr = { class: 'has-text-justified' }
+
+block content
+  :markdown
+    # 簡介
+
+    > <small class="has-text-grey-light">/* 可以忽略這個區塊 */</small>
+    >
+    > Dynapi 目前仍在重開發階段，在期望的成果完成之前，文件只列出功能並且不會區分版本。
+    >
+    > 目前文件可能充斥著註記，或許是需要改善的地方，或許是猶豫使用的辭彙，請不要太在意它們。
+    >
+    > 為了方便與社群交流，文件更新暫時以繁體中文為主，節省一些開發時間；如果願意的話，非常歡迎協助開發與翻譯的說
+    > (๑ơ ω ơ)
+    >
+    > 有任何疑問或是建議，歡迎發 [Issue][issue] 或上[臉書社團][fb_nodejs_tw]聯絡我喔 ⸗‵  ᴗ ‵⸗
+
+    > 隨著前端框架[^framework]迅速發展，除了全端型的框架，也有許多專注於前端應用的優秀框架。
+    >
+    > 「能不能將我最喜歡的前端框架，直接和伺服器整合呢？」——這是初衷；歷經幾番周折，[](
+    > )最後決定以通用型中介軟體[^middleware]的方式呈現。雖然跟預想的不同，但似乎是個不錯的選擇 (๑• ω •๑)
+
+    [^framework]: 到底要不要翻譯成「框架」啊(๑´ㅁ`)
+    [^middleware]: Middleware 翻成中介軟體會不會很奇怪？直接寫英文會比較好嗎 (´⊙ω⊙`)？
+
+    ### 何謂 Dynapi？
+    ---
+
+    `Dynapi`，或稱 `Dynamical API`，是一款即時產生動態路由的中介軟體，用於輔助 Node.js 網站伺服器開發。
+
+    Dynapi 能良好搭配 `Express`、`Connect`、甚至 `Node.HTTP`；透過觀察 [routesDir][configurations]
+    的變化，即時更新路由路徑[^route-path]與內容，省去反覆重啟伺服器的過程（如 `Nodemon`），提升開發效率。
+
+    Dynapi 提供一切開發 API 伺服器所需，並提供額外的參數來控制規則（如時間內未完成接棒[^referral]，[](
+    )則終止路由鍊[^route-chain]並傳回結果），讓安全性與執行效率更進一步提升。
+
+    [^route-path]: Route path 就直接翻譯成路由路徑了
+    [^referral]: 由 middleware 轉接到下一個 middleware 的過程。詳見 [Express: middleware](https://expressjs.com/en/guide/using-middleware.html)
+    [^route-chain]: 由 Dynapi 建立的路由路徑，依照合理的順序執行。詳見 [路由規則][routing-rules]
+
+    ### 特色
+    ---
+
+    - 單純、通用
+    - 適用於任何 HTTP Server
+    - 單檔儲存 middleware、param-middleware、error-handler 以及 request-handler
+    - 自訂每個 middleware 的響應時間
+    - ES6/ES7 轉譯
+    - More...
+
+    ### How it works?
+    ---
+
+    > TODO
+
+    ### 看看範例
+    ---
+
+    - [Hello, world!](https://github.com/shirohana/dynapi/tree/dev/examples/hello-world)
+    - [RESTful API with Lowdb](https://github.com/shirohana/dynapi/tree/dev/examples/restful-lowdb)
+
+    [issue]: https://github.com/shirohana/dynapi/issues/new
+    [fb_nodejs_tw]: https://www.facebook.com/groups/node.js.tw
+    [configurations]: /${lang}/guide/configuration
+    [routing-rules]: /${lang}/guide/routing-rules

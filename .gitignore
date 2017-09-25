@@ -1,0 +1,17 @@
+# Dependencies
+node_modules
+
+# Logs
+*.log
+
+# Compiled Files
+dist
+.dynapi
+
+# Code coverage
+coverage
+.nyc_output
+coverage.lcov
+
+# Copy of locales
+i18n
