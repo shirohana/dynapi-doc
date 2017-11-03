@@ -22,14 +22,23 @@
   ---
 
   - Add
-    - {Middleware} `export default` array support?
-    - [Custom error handling](#custom-error-handler)
-    - `index.js` alias to `get.js`
     - Custom babel transform plugins
     - `all` method support
+    - [Custom error handling](#custom-error-handler)
+
+  - Internal
+    - `Object.freeze` options
+    - Watch `aliases` dirs to improve performance
+    - Move missing default export warning from execution to build time
+
+  ### Implemented
+  ---
+
+  - Added
+    - {Middleware} `export default` array support?
     - Use ([A-Za-z0-9\_]) only in paramRoutes to separate them like [Express: Route parameters](http://expressjs.com/en/guide/routing.html#route-parameters)
 
-  - Change
+  - Changed
     - Use {Route} dirname directly instead kebab-case.
     - <a id="symbol_naming"></a>Use special symbols as filename for {Middleware}, {Parameter}, and {Catcher}? (should Customizable?)
 
@@ -45,21 +54,14 @@
         'a', '|', '~' ]
       ```
 
-      - <a id="complex_param_support"></a>Multiple {Parameter} support in same {ParamRoute}
+    - <a id="complex_param_support"></a>Multiple {Parameter} support in same {ParamRoute}
 
-        Like `/flights/:from-:to`, you can use two param file to handle different params like
-        `&from.js` and `&to.js`
-
-  - Internal
-    - `Object.freeze` options
-    - Watch `aliases` dirs to improve performance
+      Like `/flights/:from-:to`, you can use two param file to handle different params like
+      `&from.js` and `&to.js`
     - Use `babel-preset-env`
-    - Move missing default export warning from execution to build time
 
-  ### Fixed
-  ---
-
-  - Babel transform-runtime issue from syntax `export-from`. ([issue](https://github.com/babel/babel/issues/2877))
+  - Fixed
+    - Babel transform-runtime issue from syntax `export-from`. ([issue](https://github.com/babel/babel/issues/2877))
 
   ### <a id="custom-error-handler"></a>(preparing) Custom Error Handler
   ---
