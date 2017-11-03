@@ -1,4 +1,5 @@
 export default (req, res) => {
   res.type('text/html')
-  res.render('home')
+  return res.render('down')
+  // res.render('home')
 }

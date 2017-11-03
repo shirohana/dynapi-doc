@@ -1,0 +1,55 @@
+extends /layouts/document
+
+append attrs
+  - contentAttr = { class: 'has-text-justified' }
+
+block content
+  :markdown
+    ### 配置
+    ---
+
+    > [^no_conf]此頁面僅列出配置選項，並簡單解釋用途；完整的介紹請移駕至 [API][api] 頁面。
+
+    [^no_conf]: 基於考量將 `Dynapi` 設計成「簡單易用的插件型中介軟體」，`Dynapi`
+    僅提供初始化參數作為配置，並未設計獨立的配置檔案。
+
+    [api]: /${lang}/api
+
+    簡單地將參數傳入：
+
+    ```javascript
+    const dnp = require('dynapi')
+
+    // Pass an Object
+    app.use('/api', dnp({ /* Options */ }))
+
+    // or require from isolated configuration file
+    app.use('/api', dnp(require('./dnp.config.js')))
+    ```
+
+    可使用的選項：
+
+    | 選項              | 目的                                                                                                                |
+    | ----              | ----                                                                                                                |
+    | `dev`             | 目前的用途只有讓 `factory` 判斷該如何初始化 Dynapi。預設值為 `process.env.NODE_ENV !== production`                  |
+    | `rootDir`         | 專案最底層的資料夾，通常設為存放 `node_modules` 的資料夾。預設值為 `process.cwd()`                                  |
+    | `srcDir`          | 相對於 `rootDir`；除了 Modules，所有來自 `routesDir` 的相對、絕對引用的檔案都應該在 `srcDir` 內。預設值為 `rootDir` |
+    | `routesDir`       | 相對於 `srcDir`；存放動態路由檔案的資料夾。預設值為 `'api'`（也就是 `srcDir + '/api'`）                             |
+    | `responseTimeout` | 全域 Middleware timeout，單位毫秒（ms）。預設值為 `800`                                                             |
+    | `aliases`         | 引用別名；用來解決多層相對引用，檔案路徑變複雜的問題。`~/` 永遠導向到 `srcDir`。預設值為 `[]`                       |
+    | `methods`         | 列出所有允許的方法。預設值暫時請參考 [Dynapi methods][dnp_methods]                                                  |
+
+    [dnp_methods]: https://github.com/shirohana/dynapi/blob/4f46ee2a3cb860b6046ec7f1650b1ec012d427bd/lib/common/options.js#L48
+
+  //- table.table
+    thead
+      tr
+        th Option
+        th Type
+        th Default
+
+    tbody
+      tr
+        td: code dev
+        td: code Boolean
+        td: code process.env.NODE_ENV !== 'production'

@@ -1,0 +1,31 @@
+{
+  "lang": "en",
+  "flagIcon": "us",
+  "languageName": "English",
+  "language": "Language",
+  "homepage": "Homepage",
+  "highlightStyle": "github",
+  "resource": "Resource",
+  "links": {
+    "news": "News",
+    "guide": "Guide",
+    "api": "API",
+    "changelog": "Changelog"
+  },
+  "guide": {
+    "Getting Started": {
+      "": "Introduction",
+      "installation": "Installation",
+      "definitions": "Difinitions",
+      "configuration": "Configurarion",
+      "routing-rules": "Routing Rules"
+    },
+    "Topic": {
+      "responser": "Responser",
+      "middleware": "Middleware",
+      "parameter": "Parameter",
+      "catcher": "Catcher"
+    }
+  }
+}
+

@@ -1,0 +1,88 @@
+extends /layouts/document
+
+append attrs
+  - contentAttr = { class: 'has-text-justified' }
+
+block content
+  :markdown
+    ## 路由規則
+    ---
+
+    Dynapi 以 `routesDir` 作為根目錄，讀取、轉譯其內所有檔案，並依照特定的檔名格式產生路由。
+
+    每個 {Responser}、{Middleware}、{Parameter}、{Catcher} 預設的出口[^export]都該是
+    Function，Dynapi 會依照類型傳入不同輸量的參數，等待其完成工作並呼叫 `next()`。
+
+    [^export]: Default export
+
+    ### 基本路由
+
+    以常見的 RESTful 路由當範例[^json_placeholder]，比如說你想實現像這樣子的路由：
+
+    | Method | URL               |
+    | ------ | ----------------- |
+    | GET    | /posts            |
+    | GET    | /posts/1          |
+    | GET    | /posts/1/comments |
+    | POST   | /posts            |
+    | PUT    | /posts/1          |
+    | PATCH  | /posts/1          |
+    | DELETE | /posts/1          |
+
+    只需要建立像這樣的檔案結構：
+
+    ```
+    </project/
+    ▾ api/
+      ▾ posts/
+        ▾ :id/
+          ▾ comments/
+          |   get.js  <- GET /posts/:id/comments
+          | param.js   <- 用來指定 :id 只允許數字
+          | get.js     <- GET    /posts/:id
+          | put.js     <- PUT    /posts/:id
+          | patch.js   <- PATCH  /posts/:id
+          | delete.js  <- DELETE /posts/:id
+          get.js   <- GET  /posts
+          post.js  <- POST /posts
+    ```
+
+    其中 `param.js` 只需要一句 `export const pattern = /^\d+$/` 即可指定只有數字能通過這個路由。
+
+    ### 資源路由
+
+    有時候你會需要建立一些每個 <span class="tag">Route</span> 只有一個
+    <span class="tag">Responser</span> 的路由，這時你能使用複合型的檔名來建立路由。
+
+    比如說建立下表[^json_placeholder]中的路由：
+
+    | Method | URL       |
+    | ------ | --------- |
+    | GET    | /posts    |
+    | GET    | /comments |
+    | GET    | /albums   |
+    | GET    | /photos   |
+    | GET    | /todos    |
+    | GET    | /users    |
+
+    透過複合型檔名，每個路徑只需各建立一個檔案，即可產生上表中的路由：
+
+    ```
+    </project/
+    ▾ api/
+        getPosts.js
+        getComments.js
+        getAlbums.js
+        getPhotos.js
+        getTodos.js
+        getUsers.js
+    ```
+
+    ## 範例
+    ---
+
+    可以參考完成後的範例
+
+    - [RESTful API with Lowdb](https://github.com/shirohana/dynapi/tree/dev/examples/restful-lowdb)
+
+    [^json_placeholder]: 這是來自 [JSON Placeholder](https://jsonplaceholder.typicode.com/) 的範例。

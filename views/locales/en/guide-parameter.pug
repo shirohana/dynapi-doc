@@ -1,0 +1,102 @@
+extends /layouts/document
+
+include /mixins/bulma-tag
+
+append attrs
+  - contentAttr = { class: 'has-text-justified' }
+
+block content
+  :markdown
+    # Parameter {Parameter}
+
+    > {Parameter} 是種特別的 {Middleware}，專門處理來自請求網址中的參數。
+    >
+    > 同為中介軟體，{Parameter} 的執行順位在 {Middleware} 之前。
+
+    ## 檔名格式
+    ---
+
+    目前 {Parameter} 的檔案名稱統一為
+    `param.js`，等待功能[^complex_param_support]完成再更新文件。
+
+    {Parameter} 必須直屬於 {ParamRoute} 才會被調用。
+
+    [^complex_param_support]: 支援類似 `/:from-:to` 的格式，詳情請見 [Complex Parameter Support](/${lang}/news#complex_param_support)
+
+    ### 範例
+
+    ```
+    </project/
+    ▾ api/
+      ▾ users/:id/
+          param.js  <- 收到 URL 中 `:id` 的字串作為第四個參數
+          middleware.js  <- 當 param.js 呼叫 `next()` 之後才會執行
+          get.js   <- 當 param.js 跟 middleware.js 都呼叫 `next()` 之後才輪到它
+      ...
+    ```
+
+    ## 檔案內容
+    ---
+
+    ### 範例
+
+    ```javascript
+    // 只允許數字
+    export const pattern = /^\d+$/
+
+    // (req: Request, res: Response, next: Function, param: String)
+    export default (req, res, next, userId) => {
+      const user = User.findOne({ id: userId })
+
+      if (!user) {
+        next(new UserNotExistsError()) // 拋出錯誤讓 Catcher 處理
+        return // 結束方法。也可以整合成一句 `return next(...)`
+      }
+
+      req.user = user // 把 user 儲存到 req 讓後面的 Handler 使用
+      return next() // 通知 Dynapi 執行下一個 Handler
+    }
+    ```
+
+    ### 選項
+
+    - `pattern` 指定哪些請求能被受理。
+
+      ```javascript
+      export const pattern = undefined // 預設值（RegExp）
+      ```
+
+      如果希望在同個路徑上受理多種不同形式的請求，你可以放寬 pattern 配對，或是不 export pattern
+      並自行判斷類型，又或是使用多個 {ParamRoute}：
+
+      ```
+      </project/
+      ▾ api/
+        ▾ users/
+          ▾ :id/
+            param.js  <- pattern = /^\d+$/
+          ▾ :name/
+            param.js  <- pattern = /^[a-zA-Z0-9_]+$/
+        ...
+      ```
+
+    - `ignore` 是否忽略這個檔案。設為 `true` 時，行為跟這檔案不存在一樣。
+
+      ```javascript
+      export const ignore = false // 預設值
+      ```
+
+    - `timeout` 指定必須在多少時間內做出響應（呼叫 `next()`）。
+
+      如果沒有在時間內呼叫 `next()`，Dynapi 會終止等待並拋出 408(Response Timeout)
+      Error， 開發人員應確保給予 Middleware 足夠的響應時間。
+
+      ```javascript
+      /**
+       * if timeout === 0,
+       *   拒絕所有請求並拋出 408。
+       * else if timeout < 0,
+       *   持續等待直到 `next` 被調用。
+       */
+      export const timeout = 800 // 預設值（毫秒）
+      ```

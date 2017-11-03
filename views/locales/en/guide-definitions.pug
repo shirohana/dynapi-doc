@@ -1,0 +1,51 @@
+extends /layouts/document
+
+include /mixins/bulma-tag
+
+append attrs
+  - contentAttr = { class: 'has-text-justified' }
+
+block content
+  :markdown
+
+    ### 名詞定義
+    ---
+
+    `Dynapi` 延續了 [Express.js 路由規則][express_routing]，但仍有些不同的新玩意。[](
+    )為了方便文件介紹，我們想了些更適合的名稱，之後在文件中都這麼稱呼他們。
+
+    如果對 Express.js 不太熟悉，建議先到文末看看[補充資訊](#preparatory-knowledge)。
+
+    [express_routing]: https://expressjs.com/en/guide/routing.html
+
+    另外，下文中的「路由目錄」是[配置][conf]文件中的選項，為專案目錄底下特定的子目錄。
+
+    [conf]: /${lang}/guide/configuration
+
+    | 定義         | 解釋                                                                                                                                                                                              |
+    | ---          | ---                                                                                                                                                                                               |
+    | {Route}      | 即 [Route path][rp]；每個路由目錄（含）底下的子目錄皆稱為 {Route}，每個 {Route} 都有專屬的 `route path`。                                                                                         |
+    | {ParamRoute} | 即 [Route parameter][rop]；每個路由目錄底下，開頭為「:」的子目錄即為 {ParamRoute}。                                                                                                               |
+    | {Responser}  | 即 [Route method][rom]；以 [method name][methods] 為開頭，負責回應請求的檔案。例如 `get.js`、`post.js` 之類的，皆以 {Responser} 作為代稱。任何無錯誤發生的請求都應該在 {Responser} 內做出回應。 |
+    | {Middleware} | 即 [Route handler][roh]；在 {Route} 底下，命名為 `middleware.js` 的檔案皆屬於 {Middleware}。                                                                                                      |
+    | {Parameter}  | 結合 [Route parameter][rop] 與 [app.param][param]，但屬於 {Middleware}；在 {ParamRoute} 底下，命名為 `param.js` 的檔案皆屬於 {Parameter}。                                                        |
+    | {Catcher}    | 即 [Error handler][eh]；因為 `Error Handler` 太長了所以替他取個簡單的別名。尚未實作。                                                                                                             |
+
+    [eh]: https://expressjs.com/en/guide/error-handling.html
+    [rp]: https://expressjs.com/en/guide/routing.html#route-paths
+    [rop]: https://expressjs.com/en/guide/routing.html#route-parameters
+    [rom]: https://expressjs.com/en/guide/routing.html#route-methods
+    [roh]: https://expressjs.com/en/guide/routing.html#route-handlers
+    [methods]: http://expressjs.com/en/4x/api.html#routing-methods
+    [mdw]: https://expressjs.com/en/guide/writing-middleware.html
+    [param]: https://expressjs.com/en/4x/api.html#app.param
+
+    ### <a id="preparatory-knowledge"></a>補充資訊
+    ---
+
+    這裡列出的資訊是給不熟悉 Express.js 的使用者、或是尚未整合到此文件的內容，[](
+    )熟悉路由運作模式的使用者可以忽略這一部份。
+
+    - [Express 路由](https://expressjs.com/en/guide/routing.html)
+    - [Express 中介軟體](https://expressjs.com/en/guide/writing-middleware.html)
+    - [Express 參數中介軟體](https://expressjs.com/en/4x/api.html#app.param)

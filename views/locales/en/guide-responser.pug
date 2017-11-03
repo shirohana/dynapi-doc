@@ -1,0 +1,151 @@
+extends /layouts/document
+
+include /mixins/bulma-tag
+
+append attrs
+  - contentAttr = { class: 'has-text-justified' }
+
+block content
+  :markdown
+    # Responser {Responser}
+
+    > {Responser} 是負責回應請求的 `Route Method`。
+    >
+    > 任何符合路由路徑、沒有發生錯誤（沒有被 {Middleware} 拋出、或是被自己拋出例外事件）的請求，都應該在
+    > {Responser} 完成響應。
+
+    ## 檔名格式
+    ---
+
+    {Responser} 的檔案名稱決定了這個 {Responser} 只接收哪種 `method` 的請求。
+
+    _註 1._ 目前不考慮支援單個 {Responser} 接收兩種以上的 method，這會破壞路由目錄的直覺性。但是
+    wildcard (`all`) 不受此限。
+
+    _註 2._ `m-search` 目前暫時更名為 `msearch`。
+
+    ### 基本檔名
+
+    只看目錄就能明白路由結構，十分清爽。
+
+    ```
+    </project/
+    ▾ api/
+      ▾ users/
+        | get.js   <- GET  /users
+        | post.js  <- POST /users
+      ...
+    ```
+
+    如果以 [Express.js Router][express_router] 來演釋，大概就是這個樣子：
+
+    [express_router]: http://expressjs.com/en/4x/api.html#router.route
+
+    ```javascript
+    const router = express.Router()
+
+    router.route('/users')
+    .get(/* default export of `get.js` */)
+    .post(/* default export of `post.js` */)
+    ```
+
+    ### 複合檔名
+
+    如果每個 {Route} 內只有一個 {Responser}，顯然這麼做相當費工，而且不必要。Dynapi
+    提供了複合式檔案名稱來解決這個困擾，比如說：
+
+    ```
+    </project/
+    ▾ api/
+      ▾ users/
+          get.js  <- GET /users
+      ▾ posts/
+          get.js  <- GET /posts
+      ...
+    ```
+
+    可以寫成下面這樣，他們完全等意。
+
+    ```
+    </project/
+    ▾ api/
+        getUsers.js  <- GET /users
+        getPosts.js  <- GET /posts
+      ...
+    ```
+
+    你可以參考這份[範例](https://github.com/shirohana/dynapi/tree/dev/examples/restful-lowdb)。
+
+    但在引入複合檔名之後，便有機會產生路由路徑衝突，我們後續再談。
+
+    ## 檔案內容
+    ---
+
+    ### 範例
+
+    ```javascript
+    // (req: Request, res: Response) 參數的內容由使用的 HTTP 伺服器決定
+    export default (req, res) => {
+      // 這裡應避免異步執行，並且盡量使用簡單的邏輯。
+      // 雖然這個方法會被同步執行，但並不會阻塞 Dynapi 處理其他請求。
+
+      // 使用 Express.js 的話，能簡單地傳回 JSON 回覆。
+      res.json({ message: 'Hello, world!' })
+
+      // 如果方法同步執行結束後仍未完成響應（res.headersSent === false），
+      // 則 Dynapi 拋出 408 (Request Timeout) 錯誤，其可被 `Catcher` 捕捉。
+    }
+    ```
+
+    ### 選項
+
+    - `ignore` 是否忽略這個檔案。設為 `true` 時，行為跟這檔案不存在一樣。
+
+      ```javascript
+      export const ignore = false // 預設值
+      ```
+
+    ### 異步執行
+
+    通常情況下，將異步邏輯[^asyncs]放到 {Middleware} 或是 {Parameter}
+    會是比較好的做法，但有時你仍有這麼做的原因……這時你可以大方地傳回一個
+    `Promise` 物件，或者，使用 `await`。
+
+    [^asyncs]: 例如 Google ReCaptcha、檢查使用者存不存在之類的
+
+    此時 Dynapi 會等待 resolved 而不會直接回傳 408 (Request Timeout)，而且你能（你應該）指定這個[](
+    )異步方法得要在多少時間之內 resolve，否則 Dynapi 將中止異步操作並回傳 408 (Request
+    Timeout)，以避免請求等不到響應而破壞使用者體驗。
+
+    ```javascript
+    // 指定整個過程得在 400 毫秒內完成，否則強制拋出 408
+    export const timeout = 400 // 預設值為 options.responseTimeout 或是 800
+
+    // 使用 async 的好處是你能在內部使用 await
+    export default async (req, res) => {
+      await User.touch(req.id) // Update last_modified field of user
+
+      res.sendStatus(204)
+    }
+    ```
+
+    ### 拋出例外
+
+    你可以在 {Responser} 中拋出例外。拋出例外能幫助簡化邏輯以及流程控制，並且能使用 {Catcher}
+    進行捕捉，統一在 {Catcher} 內進行響應能讓邏輯更簡潔，也能易於管控哪些錯誤資訊應該被印到主控台。
+
+    儘管透過 {Middleware} 拋出例外是更好的做法，但仍無法因應所有的情形。比如說，在 {Responser} 內使用異步執行。
+
+    ```javascript
+    export default (req, res) => {
+      cosnt result = do_something()
+      if (result.err) {
+        if (useCatcher)
+          throw new CustomError(err) // 依序冒泡直到被 Catcher 捕獲，否則 Dynapi 將用預設方式處理。
+        else
+          return res.sendStatus(400) // 直接結束響應，不帶走一片雲彩。使用 return 避免繼續向下執行。
+      }
+
+      res.json(result)
+    }
+    ```

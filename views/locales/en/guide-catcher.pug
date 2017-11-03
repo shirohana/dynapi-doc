@@ -1,0 +1,14 @@
+extends /layouts/document
+
+include /mixins/bulma-tag
+
+append attrs
+  - contentAttr = { class: 'has-text-justified' }
+
+block content
+  :markdown
+    # Catcher {Catcher}
+
+    > {Catcher} 用於捕獲從 {Middleware} 或是 {Responser} 拋出的錯誤，給予適當的處理和紀錄錯誤。
+
+    > 尚未實作
