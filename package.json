@@ -15,7 +15,7 @@
     "bulma": "^0.5.3",
     "cpx": "^1.5.0",
     "cross-env": "^5.0.5",
-    "dynapi": "^0.2.0",
+    "dynapi": "^0.3.2",
     "express": "^4.15.4",
     "flag-icon-css": "^2.8.0",
     "font-awesome": "^4.7.0",

@@ -1,6 +1,8 @@
 export default (req, res) => {
   const { lang, page, chapter } = req
 
+  return res.redirect(`/${lang}`)
+
   const renderFile = `locales/${lang}/${page}-${chapter}`
   res.render(renderFile, (err, html) => {
     if (err) {
