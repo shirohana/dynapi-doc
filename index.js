@@ -13,6 +13,7 @@ const cpx = require('cpx')
 const rimraf = require('rimraf')
 const glob = require('glob')
 const lru = require('lru-cache')
+const morgan = require('morgan')
 
 // Clean up
 rimraf.sync('i18n')
@@ -47,6 +48,10 @@ i18n.expressBind(app, {
   extension: '.json',
   devMode: !production
 })
+
+if (production) {
+  app.use(morgan('combined'))
+}
 
 app.use('/', dynapi({
   routesDir: 'pages',
